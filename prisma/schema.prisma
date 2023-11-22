@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String             @id @default(uuid())
+  username         String             @unique
+  avatar_url       String?
+  html_url         String?
+  name             String?
+  company          String?
+  blog             String?
+  email            String             @unique
+  bio              String?
+  twitter_username String?
+  public_repos     Int?
+  followers        Int?
+  following        Int?
+  password         String
+  repositories     Repository[]
+  searchHistoryLog SearchHistoryLog[]
+}
+
+model Repository {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  language    String
+  author      User?   @relation(fields: [authorId], references: [id])
+  authorId    String?
+  repoLink    String
+}
+
+model SearchHistoryLog {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  author     User?    @relation(fields: [authorId], references: [id])
+  authorId   String
+  username   String
+  status     String
+  foundRepos Int
+}
